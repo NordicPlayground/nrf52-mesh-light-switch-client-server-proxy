@@ -1,0 +1,46 @@
+{
+    "softdevices": [
+        {
+            "name": "s110_8.0.0",
+            "flash_start": 4096,
+            "flash_size": 98304,
+            "ram_size": 8192,
+            "version": "0x0064"
+        },
+        {
+            "name": "s130_2.0.1",
+            "flash_start": 4096,
+            "flash_size": 110592,
+            "ram_size": 6400,
+            "version": "0x0087"
+        },
+        {
+            "name": "s132_5.0.0",
+            "flash_start": 4096,
+            "flash_size": 143360,
+            "ram_size": 12720,
+            "version": "0x009D"
+        },
+        {
+            "name": "s112_6.0.0",
+            "flash_start": 4096,
+            "flash_size": 102400,
+            "ram_size": 11280,
+            "version": "0x00A7"
+        },
+        {
+            "name": "s132_6.0.0",
+            "flash_start": 4096,
+            "flash_size": 155648,
+            "ram_size": 13000,
+            "version": "0x00A8"
+        },
+        {
+            "name": "s140_6.0.0",
+            "flash_start": 4096,
+            "flash_size": 155648,
+            "ram_size": 13000,
+            "version": "0x00A9"
+        }
+    ]
+}
