@@ -25,5 +25,5 @@
 **/arm/JLinkLog.txt
 **/_viminfo
 **/_vimtags
-_build/
+build/
 RTE/
