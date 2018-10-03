@@ -120,7 +120,7 @@ static bool on_off_server_get_cb(const generic_on_off_server_t * p_server)
 
 static bool on_off_server_set_cb(const generic_on_off_server_t * p_server, bool value)
 {
-    // TODO: Hands on 2.3 - After initializing the PWM library in main.c, change this function to use the PWM Driver instead of the hal_led_ functions
+    // TODO: Hands on 2.3 - After initializing the PWM library in main(), change this function to use the PWM Driver instead of the hal_led_.. functions
     //                      Try to make the LED's fade in and out when the callback occurs, rather than having it set/cleared immediately
     uint32_t err_code;
     __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Got SET command to %u\n", value);
@@ -143,7 +143,7 @@ static void node_reset(void)
     __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "----- Node reset  -----\n");
     hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_RESET);
 
-/* This function may return if there are ongoing flash operations. */
+    /* This function may return if there are ongoing flash operations. */
     mesh_stack_device_reset();
 }
 
