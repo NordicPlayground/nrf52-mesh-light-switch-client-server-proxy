@@ -199,6 +199,13 @@ static void prov_evt_handler(const nrf_mesh_prov_evt_t * p_evt)
             m_device_provisioned = true;
             break;
         }
+        
+        case NRF_MESH_PROV_EVT_INVITE_RECEIVED:
+            if(m_params.invite_received_cb != NULL)
+            {
+                m_params.invite_received_cb();
+            }
+            break;
 
         default:
             break;

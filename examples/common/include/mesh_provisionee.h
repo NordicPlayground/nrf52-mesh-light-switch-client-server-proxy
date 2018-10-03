@@ -57,6 +57,13 @@
 typedef void (*mesh_provisionee_prov_complete_cb_t)(void);
 
 /**
+ * Invite received callback.
+ *
+ * This function is called to indicate that the device has been successfully provisioned.
+ */
+typedef void (*mesh_provisionee_invite_received_cb_t)(void);
+
+/**
  * Mesh stack configuration parameters.
  *
  * Some fields are optional; the description of the specific fields notes if the
@@ -75,6 +82,17 @@ typedef struct
      *       See @ref CONFIG_SERVER_EVENTS.
      */
     mesh_provisionee_prov_complete_cb_t prov_complete_cb;
+    
+    /**
+     * Pointer to a function used to signal the completion of the device provisioning
+     * procedure. Can be set to @c NULL if not used.
+     *
+     * @note Getting this callback means that a device is at minimum _provisioned_, however,
+     *       it does not imply anthing about model configuration, added keys, etc. That may
+     *       be altered by a Configuration Client at any point in time.
+     *       See @ref CONFIG_SERVER_EVENTS.
+     */
+    mesh_provisionee_invite_received_cb_t invite_received_cb;
 
     /**
      * NULL-terminated device URI string.

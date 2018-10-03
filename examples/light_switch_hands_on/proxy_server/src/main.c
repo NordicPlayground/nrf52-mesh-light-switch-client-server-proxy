@@ -262,6 +262,12 @@ static void provisioning_complete_cb(void)
     hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_PROV);
 }
 
+static void invite_received_cb(void)
+{
+    hal_led_mask_set(LEDS_MASK, false);
+    hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_PROV);
+}
+
 static void client_status_cb(const generic_on_off_client_t * p_self, generic_on_off_status_t status, uint16_t src)
 {
 
@@ -407,8 +413,9 @@ static void start(void)
         static const uint8_t static_auth_data[NRF_MESH_KEY_SIZE] = STATIC_AUTH_DATA;
         mesh_provisionee_start_params_t prov_start_params =
         {
-            .p_static_data    = static_auth_data,
-            .prov_complete_cb = provisioning_complete_cb,
+            .p_static_data      = static_auth_data,
+            .prov_complete_cb   = provisioning_complete_cb,
+            .invite_received_cb = invite_received_cb,
             .p_device_uri = NULL
         };
         ERROR_CHECK(mesh_provisionee_prov_start(&prov_start_params));
