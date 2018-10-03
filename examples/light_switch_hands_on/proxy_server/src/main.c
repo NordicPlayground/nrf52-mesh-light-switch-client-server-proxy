@@ -79,19 +79,18 @@
 #include "example_common.h"
 #include "nrf_mesh_config_examples.h"
 #include "light_switch_example_common.h"
-//#include "app_onoff.h"
 #include "simple_pwm.h"
-
 
 #define ONOFF_SERVER_0_LED              (BSP_LED_0)
 
 static                                  generic_on_off_server_t m_server;
 static                                  generic_on_off_client_t m_client;
 static bool                             m_device_provisioned;
-static bool                             m_led_flag= false;
-static bool                             m_on_off_button_flag= false;
+static bool                             m_led_flag = false;
+static bool                             m_on_off_button_flag = false;
 
 #define DEVICE_NAME                     "nRF5x Mesh Light"
+
 #define MIN_CONN_INTERVAL               MSEC_TO_UNITS(25,  UNIT_1_25_MS)           /**< Minimum acceptable connection interval. was 250 */
 #define MAX_CONN_INTERVAL               MSEC_TO_UNITS(100,  UNIT_1_25_MS)           /**< Maximum acceptable connection interval. was 1000 */
 #define GROUP_MSG_REPEAT_COUNT          (5)
@@ -124,14 +123,12 @@ static bool on_off_server_set_cb(const generic_on_off_server_t * p_server, bool 
     __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Got SET command to %u\n", value);
     if (value)
     {
-        //ERROR_CHECK(drv_ext_light_on(1));
         //hal_led_pin_set(ONOFF_SERVER_0_LED, true);
         SIMPLE_PWM_FADE_IN_SLOW(0);
         m_led_flag = true;
     }
     else
     {
-        //ERROR_CHECK(drv_ext_light_off(1));
         //hal_led_pin_set(ONOFF_SERVER_0_LED, false);
         SIMPLE_PWM_FADE_OUT_SLOW(0);
         m_led_flag = false;
@@ -189,16 +186,15 @@ static void button_event_handler(uint32_t button_number)
             state change publication due to local event. */
             case 0:
             case 1:
-               
-             /* send a group message to the ODD group, with flip the current button flag value */
-              m_on_off_button_flag=!m_on_off_button_flag; 
-              status = generic_on_off_client_set_unreliable(&m_client,
+                /* send a group message to the ODD group, with flip the current button flag value */
+                m_on_off_button_flag=!m_on_off_button_flag; 
+                status = generic_on_off_client_set_unreliable(&m_client,
                                                            m_on_off_button_flag,
                                                           GROUP_MSG_REPEAT_COUNT);
                 break;
+            
             /* Initiate node reset */
             case 3:
-            {
                 /* Clear all the states to reset the node. */
                 if (mesh_stack_is_device_provisioned())
                 {
@@ -211,7 +207,6 @@ static void button_event_handler(uint32_t button_number)
                     __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "The device is unprovisioned. Resetting has no effect.\n");
                 }
                 break;
-            }
 
             default:
                 break;

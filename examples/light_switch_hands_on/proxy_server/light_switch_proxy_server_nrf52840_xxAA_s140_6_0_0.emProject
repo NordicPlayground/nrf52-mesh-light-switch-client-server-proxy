@@ -32,9 +32,6 @@
       project_type="Executable" />
     <folder Name="Application">
       <file file_name="src/main.c" />
-      <file file_name="../../common/src/app_onoff.c">
-        <configuration Name="Debug" build_exclude_from_build="Yes" />
-      </file>
       <file file_name="../../common/src/mesh_provisionee.c" />
       <file file_name="../../common/src/rtt_input.c" />
       <file file_name="../../common/src/simple_hal.c" />
