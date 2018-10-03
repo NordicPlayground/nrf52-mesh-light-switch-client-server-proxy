@@ -11,29 +11,6 @@
 #define SIMPLE_PWM_PIN_UNUSED       0xFFFFFFFF
 #define SIMPLE_PWM_LOOP_INFINITE    0
 
-// Sample PWM buffers
-extern uint16_t                                 sinus_pulse_1000ms[50];
-#define SIMPLE_PWM_PULSE_SLOW(ch_index, count)  pwm_set_loop(ch_index, sinus_pulse_1000ms, 50, count)
-
-extern uint16_t                                 sinus_pulse_500ms[25];
-#define SIMPLE_PWM_PULSE_FAST(ch_index, count)  pwm_set_loop(ch_index, sinus_pulse_500ms, 25, count)
-
-extern uint16_t                                 fade_in_1000ms[50];
-#define SIMPLE_PWM_FADE_IN_SLOW(ch_index)       pwm_set_loop(ch_index, fade_in_1000ms, 50, 1)
-
-extern uint16_t                                 fade_out_1000ms[50];
-#define SIMPLE_PWM_FADE_OUT_SLOW(ch_index)      pwm_set_loop(ch_index, fade_out_1000ms, 50, 1)
-
-typedef struct
-{
-    bool constant;
-    uint16_t *data_ptr;
-    float    *data_ptr_float;
-    uint32_t  data_length;
-    uint32_t  data_index;
-    uint32_t  loop_counter;
-}simple_pwm_channel_config_t;
-
 
 /**
  * Initialize the simple PWM library
@@ -112,5 +89,27 @@ void pwm_set_loop(uint32_t ch_index, uint16_t *buffer, uint32_t length, uint32_t
  *
  */
 void pwm_set_loop_f(uint32_t ch_index, float *buffer, uint32_t length, uint32_t loop_num);
+
+/**
+ * The following example buffers are provided to showcase typical LED features like fading in/out and pulsing 
+ *
+ * To use them simply call the defines, like this:
+ *
+ *      // Set the first PWM output to pulse slowly 10 times
+ *      SIMPLE_PWM_PULSE_SLOW(0, 10);
+ *
+ *      // Have the second PWM output fade from 0 to 100% duty cycle
+ *      SIMPLE_PWM_FADE_IN_SLOW(1);
+ *
+ */
+#define SIMPLE_PWM_PULSE_SLOW(ch_index, count)  pwm_set_loop(ch_index, sinus_pulse_1000ms, 50, count)
+#define SIMPLE_PWM_PULSE_FAST(ch_index, count)  pwm_set_loop(ch_index, sinus_pulse_500ms, 25, count)
+#define SIMPLE_PWM_FADE_IN_SLOW(ch_index)       pwm_set_loop(ch_index, fade_in_1000ms, 50, 1)
+#define SIMPLE_PWM_FADE_OUT_SLOW(ch_index)      pwm_set_loop(ch_index, fade_out_1000ms, 50, 1)
+
+extern uint16_t sinus_pulse_1000ms[50];
+extern uint16_t sinus_pulse_500ms[25];
+extern uint16_t fade_in_1000ms[50];
+extern uint16_t fade_out_1000ms[50];
 
 #endif

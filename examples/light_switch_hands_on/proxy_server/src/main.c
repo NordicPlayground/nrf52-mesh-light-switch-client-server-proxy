@@ -123,14 +123,12 @@ static bool on_off_server_set_cb(const generic_on_off_server_t * p_server, bool 
     __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Got SET command to %u\n", value);
     if (value)
     {
-        //hal_led_pin_set(ONOFF_SERVER_0_LED, true);
-        SIMPLE_PWM_FADE_IN_SLOW(0);
+        hal_led_pin_set(ONOFF_SERVER_0_LED, true);
         m_led_flag = true;
     }
     else
     {
-        //hal_led_pin_set(ONOFF_SERVER_0_LED, false);
-        SIMPLE_PWM_FADE_OUT_SLOW(0);
+        hal_led_pin_set(ONOFF_SERVER_0_LED, false);
         m_led_flag = false;
     }
     
@@ -140,9 +138,9 @@ static bool on_off_server_set_cb(const generic_on_off_server_t * p_server, bool 
 static void node_reset(void)
 {
     __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "----- Node reset  -----\n");
-    //hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_RESET);
-    SIMPLE_PWM_PULSE_FAST(1, 8);
-    /* This function may return if there are ongoing flash operations. */
+    hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_RESET);
+
+/* This function may return if there are ongoing flash operations. */
     mesh_stack_device_reset();
 }
 
@@ -255,9 +253,8 @@ static void provisioning_complete_cb(void)
     dsm_local_unicast_addresses_get(&node_address);
     __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Node Address: 0x%04x \n", node_address.address_start);
 
-    //hal_led_mask_set(LEDS_MASK, false);
-    //hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_PROV);
-    SIMPLE_PWM_PULSE_FAST(2, 4);
+    hal_led_mask_set(LEDS_MASK, false);
+    hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_PROV);
 }
 
 static void client_status_cb(const generic_on_off_client_t * p_self, generic_on_off_status_t status, uint16_t src)
@@ -416,22 +413,11 @@ static void start(void)
     __LOG_XB(LOG_SRC_APP, LOG_LEVEL_INFO, "Device UUID ", p_uuid, NRF_MESH_UUID_SIZE);
 }
 
-static void start_pwm(void)
-{
-    uint8_t pwm_pins[] = {BSP_LED_0 | PWM_PIN_INVERTED, 
-                          BSP_LED_1 | PWM_PIN_INVERTED, 
-                          BSP_LED_2 | PWM_PIN_INVERTED, 
-                          BSP_LED_3 | PWM_PIN_INVERTED};    
-    pwm_init(pwm_pins, 4);
-}
 
 int main(void)
 {
     initialize();
     execution_start(start);
-    
-    start_pwm();
-    SIMPLE_PWM_PULSE_SLOW(3, SIMPLE_PWM_LOOP_INFINITE);
     
     for (;;)
     {

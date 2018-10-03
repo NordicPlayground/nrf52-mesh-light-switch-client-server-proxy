@@ -7,7 +7,18 @@ uint16_t sinus_pulse_500ms[25];
 uint16_t fade_in_1000ms[50];
 uint16_t fade_out_1000ms[50];
 
+typedef struct
+{
+    bool constant;
+    uint16_t *data_ptr;
+    float    *data_ptr_float;
+    uint32_t  data_length;
+    uint32_t  data_index;
+    uint32_t  loop_counter;
+}simple_pwm_channel_config_t;
+
 #define SEQ_VALUE_BY_CHANNEL(channel) (*(&m_simple_pwm_seq_values.channel_0 + (channel)))
+
 static nrf_drv_pwm_t m_pwm0 = NRF_DRV_PWM_INSTANCE(0);
 
 static simple_pwm_channel_config_t m_channel_config[SIMPLE_PWM_CHANNEL_NUM];
