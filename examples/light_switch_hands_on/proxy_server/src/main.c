@@ -89,6 +89,7 @@ static bool                             m_device_provisioned;
 static bool                             m_led_flag = false;
 static bool                             m_on_off_button_flag = false;
 
+// TODO: Hands on 2.1 - Change the DEVICE_NAME to something unique
 #define DEVICE_NAME                     "nRF5x Mesh Light"
 
 #define MIN_CONN_INTERVAL               MSEC_TO_UNITS(25,  UNIT_1_25_MS)           /**< Minimum acceptable connection interval. was 250 */
@@ -119,6 +120,8 @@ static bool on_off_server_get_cb(const generic_on_off_server_t * p_server)
 
 static bool on_off_server_set_cb(const generic_on_off_server_t * p_server, bool value)
 {
+    // TODO: Hands on 2.3 - After initializing the PWM library in main.c, change this function to use the PWM Driver instead of the hal_led_ functions
+    //                      Try to make the LED's fade in and out when the callback occurs, rather than having it set/cleared immediately
     uint32_t err_code;
     __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Got SET command to %u\n", value);
     if (value)
@@ -253,6 +256,8 @@ static void provisioning_complete_cb(void)
     dsm_local_unicast_addresses_get(&node_address);
     __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Node Address: 0x%04x \n", node_address.address_start);
 
+    // TODO: Hands on 2.3 - Change the following code to pulse the LED's rather than blink
+    //                      Use the LED_BLINK_CNT_PROV to decide the number of pulses
     hal_led_mask_set(LEDS_MASK, false);
     hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_PROV);
 }
@@ -418,6 +423,11 @@ int main(void)
 {
     initialize();
     execution_start(start);
+    
+    // TODO: Hands on 2.3 - Initialize the simple_pwm library to use the 4 LED's on the devkit
+    //                      To verify that the PWM driver works, set one of the LED's to blink or pulse in a loop
+    //                      Hint: Look at the comments in simple_pwm.h for examples of how to use the simple_pwm library
+    //                      Hint2: The LED's on the board are defined by the BSP_LED_x defines, where x is 0-3
     
     for (;;)
     {
