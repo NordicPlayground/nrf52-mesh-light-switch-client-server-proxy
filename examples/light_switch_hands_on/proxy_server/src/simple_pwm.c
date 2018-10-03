@@ -105,44 +105,44 @@ void pwm_init(uint8_t *pin_list, uint32_t pin_num)
     }
 }
 
-void pwm_set_constant(uint32_t ch, uint32_t duty_cycle)
+void pwm_set_constant(uint32_t ch_index, uint32_t duty_cycle)
 {
-    if(ch < SIMPLE_PWM_CHANNEL_NUM)
+    if(ch_index < SIMPLE_PWM_CHANNEL_NUM)
     {
-        SEQ_VALUE_BY_CHANNEL(ch) = duty_cycle;
-        m_channel_config[ch].constant = true;
+        SEQ_VALUE_BY_CHANNEL(ch_index) = duty_cycle;
+        m_channel_config[ch_index].constant = true;
     }
 }
 
-void pwm_set_constant_f(uint32_t ch, float duty_cycle)
+void pwm_set_constant_f(uint32_t ch_index, float duty_cycle)
 {
-    if(ch < SIMPLE_PWM_CHANNEL_NUM)
+    if(ch_index < SIMPLE_PWM_CHANNEL_NUM)
     {
-        SEQ_VALUE_BY_CHANNEL(ch) = (uint32_t)(duty_cycle * SIMPLE_PWM_MAX_VALUE);
-        m_channel_config[ch].constant = true;
+        SEQ_VALUE_BY_CHANNEL(ch_index) = (uint32_t)(duty_cycle * SIMPLE_PWM_MAX_VALUE);
+        m_channel_config[ch_index].constant = true;
     }
 }
 
-void pwm_set_loop(uint32_t ch, uint16_t *buffer, uint32_t length, uint32_t loop_num)
+void pwm_set_loop(uint32_t ch_index, uint16_t *buffer, uint32_t length, uint32_t loop_num)
 {
-    if(ch < SIMPLE_PWM_CHANNEL_NUM)
+    if(ch_index < SIMPLE_PWM_CHANNEL_NUM)
     {
-        m_channel_config[ch].constant       = false;
-        m_channel_config[ch].data_ptr       = buffer;
-        m_channel_config[ch].data_ptr_float = 0;
-        m_channel_config[ch].data_length    = length;
-        m_channel_config[ch].loop_counter   = loop_num;
+        m_channel_config[ch_index].constant       = false;
+        m_channel_config[ch_index].data_ptr       = buffer;
+        m_channel_config[ch_index].data_ptr_float = 0;
+        m_channel_config[ch_index].data_length    = length;
+        m_channel_config[ch_index].loop_counter   = loop_num;
     }
 }
 
-void pwm_set_loop_f(uint32_t ch, float *buffer, uint32_t length, uint32_t loop_num)
+void pwm_set_loop_f(uint32_t ch_index, float *buffer, uint32_t length, uint32_t loop_num)
 {
-    if(ch < SIMPLE_PWM_CHANNEL_NUM)
+    if(ch_index < SIMPLE_PWM_CHANNEL_NUM)
     {
-        m_channel_config[ch].constant       = false;
-        m_channel_config[ch].data_ptr       = 0;
-        m_channel_config[ch].data_ptr_float = buffer;
-        m_channel_config[ch].data_length    = length;
-        m_channel_config[ch].loop_counter   = loop_num;
+        m_channel_config[ch_index].constant       = false;
+        m_channel_config[ch_index].data_ptr       = 0;
+        m_channel_config[ch_index].data_ptr_float = buffer;
+        m_channel_config[ch_index].data_length    = length;
+        m_channel_config[ch_index].loop_counter   = loop_num;
     }
 }
