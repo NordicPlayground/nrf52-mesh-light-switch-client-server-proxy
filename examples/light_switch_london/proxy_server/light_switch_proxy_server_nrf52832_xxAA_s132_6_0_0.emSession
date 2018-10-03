@@ -26,6 +26,7 @@
   <ProjectSessionItem path="light_switch_proxy_server_nrf52832_xxAA_s132_6.0.0;light_switch_proxy_server_nrf52832_xxAA_s132_6.0.0;Application"/>
   <ProjectSessionItem path="light_switch_proxy_server_nrf52832_xxAA_s132_6.0.0;light_switch_proxy_server_nrf52832_xxAA_s132_6.0.0;Configuration Model"/>
   <ProjectSessionItem path="light_switch_proxy_server_nrf52832_xxAA_s132_6.0.0;light_switch_proxy_server_nrf52832_xxAA_s132_6.0.0;Generic OnOff Model"/>
+  <ProjectSessionItem path="light_switch_proxy_server_nrf52832_xxAA_s132_6.0.0;light_switch_proxy_server_nrf52832_xxAA_s132_6.0.0;nRF5 SDK"/>
  </Project>
  <Register1>
   <RegisterWindow visibleNodes="CPU - Current Context/r0;CPU - Current Context/r1;CPU - Current Context/r2;CPU - Current Context/r3;CPU - Current Context/r4;CPU - Current Context/r5;CPU - Current Context/r6;CPU - Current Context/r7;CPU - Current Context/r8;CPU - Current Context/r9;CPU - Current Context/r10;CPU - Current Context/r11;CPU - Current Context/r12;CPU - Current Context/sp(r13);CPU - Current Context/lr(r14);CPU - Current Context/pc(r15);CPU - Current Context/apsr;CPU/r0;CPU/r1;CPU/r2;CPU/r3;CPU/r4;CPU/r5;CPU/r6;CPU/r7;CPU/r8;CPU/r9;CPU/r10;CPU/r11;CPU/r12;CPU/sp(r13);CPU/lr(r14);CPU/pc(r15);CPU/xpsr;CPU/msp;CPU/psp;CPU/cfbp" binaryNodes="" asciiNodes="" openNodes="CPU - Current Context" name="light_switch_proxy_server_nrf52832_xxAA_s132_6.0.0" decimalNodes="" octalNodes="" unsignedNodes=""/>
@@ -59,11 +60,11 @@
  </Watch4>
  <Files>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="21" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../doc/getting_started/SES.md" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="113" useTextEdit="1" useBinaryEdit="0" left="0" path="src/main.c" selected="1" top="409" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="432" useTextEdit="1" useBinaryEdit="0" left="0" path="src/main.c" selected="1" top="101" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="48" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../models/foundation/config/src/config_server.c" selected="0" top="33" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="77" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../models/foundation/config/include/config_server.h" selected="0" top="42" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="38" useTextEdit="1" useBinaryEdit="0" left="0" path="../../common/include/app_onoff.h" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="1" y="63" useTextEdit="1" useBinaryEdit="0" left="0" path="../../common/src/app_onoff.c" selected="0" top="35" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="63" useTextEdit="1" useBinaryEdit="0" left="0" path="../../common/src/app_onoff.c" selected="0" top="35" codecName="Default"/>
  </Files>
- <ARMCrossStudioWindow activeProject="light_switch_proxy_server_nrf52832_xxAA_s132_6.0.0" fileDialogDefaultFilter="" autoConnectTarget="J-Link" buildConfiguration="Debug" debugSearchFileMap="" fileDialogInitialDirectory="C:/Nordic_Semiconductor/nrf52-mesh-light-switch-client-server-proxy/models/model_spec/generic_on_off_hung/src" debugSearchPath="" autoConnectCapabilities="3199"/>
+ <ARMCrossStudioWindow activeProject="light_switch_proxy_server_nrf52832_xxAA_s132_6.0.0" fileDialogDefaultFilter="" autoConnectTarget="J-Link" buildConfiguration="Debug" debugSearchFileMap="" fileDialogInitialDirectory="C:/Nordic_Semiconductor/nRF5_SDK_15.0.0_a53641a/modules/nrfx/drivers/src" debugSearchPath="" autoConnectCapabilities="3711"/>
 </session>
