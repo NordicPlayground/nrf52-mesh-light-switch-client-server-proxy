@@ -43,6 +43,7 @@
       <file file_name="../../nrf_mesh_weak.c" />
       <file file_name="../../common/src/app_error_weak.c" />
       <file file_name="../../common/src/assertion_handler_weak.c" />
+      <file file_name="src/simple_pwm.c" />
     </folder>
     <folder Name="Core">
       <file file_name="../../../mesh/core/src/internal_event.c" />

@@ -80,37 +80,16 @@
 #include "nrf_mesh_config_examples.h"
 #include "light_switch_example_common.h"
 //#include "app_onoff.h"
-
-///* PWM Functionality */
-#include "nrf_drv_pwm.h"
+#include "simple_pwm.h"
 
 
 #define ONOFF_SERVER_0_LED              (BSP_LED_0)
-static nrf_drv_pwm_t m_pwm0 = NRF_DRV_PWM_INSTANCE(0);
-
-// This is for tracking PWM instances being used, so we can unintialize only
-// the relevant ones when switching from one demo to another.
-#define USED_PWM(idx) (1UL << idx)
-static uint8_t m_used = 0;
 
 static                                  generic_on_off_server_t m_server;
 static                                  generic_on_off_client_t m_client;
 static bool                             m_device_provisioned;
 static bool                             m_led_flag= false;
 static bool                             m_on_off_button_flag= false;
-static bool                             m_pwm_running = false;
-
-static uint16_t const              m_demo1_top  = 10000;
-static uint16_t const              m_demo1_step = 200;
-static uint8_t                     m_demo1_phase;
-static nrf_pwm_values_individual_t m_demo1_seq_values;
-static nrf_pwm_sequence_t const    m_demo1_seq =
-{
-    .values.p_individual = &m_demo1_seq_values,
-    .length              = NRF_PWM_VALUES_LENGTH(m_demo1_seq_values),
-    .repeats             = 0,
-    .end_delay           = 0
-};
 
 #define DEVICE_NAME                     "nRF5x Mesh Light"
 #define MIN_CONN_INTERVAL               MSEC_TO_UNITS(25,  UNIT_1_25_MS)           /**< Minimum acceptable connection interval. was 250 */
@@ -126,8 +105,6 @@ static bool m_device_provisioned;
 
 static void gap_params_init(void);
 static void conn_params_init(void);
-static void demo3(void);
-
 
 static void on_sd_evt(uint32_t sd_evt, void * p_context)
 {
@@ -143,30 +120,21 @@ static bool on_off_server_get_cb(const generic_on_off_server_t * p_server)
 
 static bool on_off_server_set_cb(const generic_on_off_server_t * p_server, bool value)
 {
-   uint32_t err_code;
-   __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Got SET command to %u\n", value);
-   if (value)
-   {
-       //ERROR_CHECK(drv_ext_light_on(1));
-       //hal_led_pin_set(ONOFF_SERVER_0_LED, true);
-       if(!m_pwm_running)
-       {
-           demo3();
-           m_led_flag=true;
-           m_pwm_running=true;
-       }
+    uint32_t err_code;
+    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Got SET command to %u\n", value);
+    if (value)
+    {
+        //ERROR_CHECK(drv_ext_light_on(1));
+        //hal_led_pin_set(ONOFF_SERVER_0_LED, true);
+        SIMPLE_PWM_FADE_IN_SLOW(0);
+        m_led_flag = true;
     }
     else
     {
-       //ERROR_CHECK(drv_ext_light_off(1));
-       //hal_led_pin_set(ONOFF_SERVER_0_LED, false);
-       if(m_pwm_running)
-       {
-           nrf_drv_pwm_uninit(&m_pwm0);
-           m_used = 0;
-           m_pwm_running=false;
-           m_led_flag=false;
-       }
+        //ERROR_CHECK(drv_ext_light_off(1));
+        //hal_led_pin_set(ONOFF_SERVER_0_LED, false);
+        SIMPLE_PWM_FADE_OUT_SLOW(0);
+        m_led_flag = false;
     }
     
     return value;
@@ -400,60 +368,6 @@ static void conn_params_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
-
-static void demo3(void)
-{
-    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Demo 3 started!\n");
-
-    /*
-     * This demo uses only one channel, which is reflected on LED 1.
-     * The LED blinks three times (200 ms on, 200 ms off), then it stays off
-     * for one second.
-     * This scheme is performed three times before the peripheral is stopped.
-     */
-
-    nrf_drv_pwm_config_t const config0 =
-    {
-        .output_pins =
-        {
-            BSP_LED_0 | NRF_DRV_PWM_PIN_INVERTED, // channel 0
-            NRF_DRV_PWM_PIN_NOT_USED,             // channel 1
-            NRF_DRV_PWM_PIN_NOT_USED,             // channel 2
-            NRF_DRV_PWM_PIN_NOT_USED,             // channel 3
-        },
-        .irq_priority = APP_IRQ_PRIORITY_LOWEST,
-        .base_clock   = NRF_PWM_CLK_125kHz,
-        .count_mode   = NRF_PWM_MODE_UP,
-        .top_value    = 25000,
-        .load_mode    = NRF_PWM_LOAD_COMMON,
-        .step_mode    = NRF_PWM_STEP_AUTO
-    };
-    APP_ERROR_CHECK(nrf_drv_pwm_init(&m_pwm0, &config0, NULL));
-    m_used |= USED_PWM(0);
-
-    // This array cannot be allocated on stack (hence "static") and it must
-    // be in RAM (hence no "const", though its content is not changed).
-    static uint16_t /*const*/ seq_values[] =
-    {
-        0x8000,
-             0,
-        0x8000,
-             0,
-        0x8000,
-             0
-    };
-    nrf_pwm_sequence_t const seq =
-    {
-        .values.p_common = seq_values,
-        .length          = NRF_PWM_VALUES_LENGTH(seq_values),
-        .repeats         = 0,
-        .end_delay       = 4
-    };
-
-    (void)nrf_drv_pwm_simple_playback(&m_pwm0, &seq, 3, NRF_DRV_PWM_FLAG_STOP);
-
-}
-
 static void initialize(void)
 {
     __LOG_INIT(LOG_SRC_APP | LOG_SRC_ACCESS | LOG_SRC_BEARER, LOG_LEVEL_INFO, LOG_CALLBACK_DEFAULT);
@@ -506,11 +420,23 @@ static void start(void)
     __LOG_XB(LOG_SRC_APP, LOG_LEVEL_INFO, "Device UUID ", p_uuid, NRF_MESH_UUID_SIZE);
 }
 
+static void start_pwm(void)
+{
+    uint8_t pwm_pins[] = {BSP_LED_0 | PWM_PIN_INVERTED, 
+                          BSP_LED_1 | PWM_PIN_INVERTED, 
+                          BSP_LED_2 | PWM_PIN_INVERTED, 
+                          BSP_LED_3 | PWM_PIN_INVERTED};    
+    pwm_init(pwm_pins, 4);
+}
+
 int main(void)
 {
     initialize();
     execution_start(start);
-
+    
+    start_pwm();
+    SIMPLE_PWM_PULSE_SLOW(3, SIMPLE_PWM_LOOP_INFINITE);
+    
     for (;;)
     {
         (void)sd_app_evt_wait();
