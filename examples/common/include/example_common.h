@@ -45,5 +45,6 @@
 #define LED_BLINK_CNT_RESET         (3)
 #define LED_BLINK_CNT_PROV          (4)
 #define LED_BLINK_CNT_NO_REPLY      (6)
+#define LED_BLINK_CNT_INVITE_RECEIVED (7)
 
 #endif /* EXAMPLE_COMMON_H__ */

@@ -126,12 +126,14 @@ static bool on_off_server_set_cb(const generic_on_off_server_t * p_server, bool 
     __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Got SET command to %u\n", value);
     if (value)
     {
-        hal_led_pin_set(ONOFF_SERVER_0_LED, true);
+        //hal_led_pin_set(ONOFF_SERVER_0_LED, true);
+        SIMPLE_PWM_FADE_IN_SLOW(0);
         m_led_flag = true;
     }
     else
     {
-        hal_led_pin_set(ONOFF_SERVER_0_LED, false);
+        //hal_led_pin_set(ONOFF_SERVER_0_LED, false);
+        SIMPLE_PWM_FADE_OUT_SLOW(0);
         m_led_flag = false;
     }
     
@@ -141,7 +143,9 @@ static bool on_off_server_set_cb(const generic_on_off_server_t * p_server, bool 
 static void node_reset(void)
 {
     __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "----- Node reset  -----\n");
-    hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_RESET);
+    //hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_RESET);
+    SIMPLE_PWM_PULSE_FAST(0, LED_BLINK_CNT_RESET);
+    SIMPLE_PWM_PULSE_FAST(1, LED_BLINK_CNT_RESET);
 
     /* This function may return if there are ongoing flash operations. */
     mesh_stack_device_reset();
@@ -258,14 +262,18 @@ static void provisioning_complete_cb(void)
 
     // TODO: Hands on 2.3 - Change the following code to pulse the LED's rather than blink
     //                      Use the LED_BLINK_CNT_PROV to decide the number of pulses
-    hal_led_mask_set(LEDS_MASK, false);
-    hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_PROV);
+    //hal_led_mask_set(LEDS_MASK, false);
+    //hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_PROV);
+    SIMPLE_PWM_PULSE_FAST(0, LED_BLINK_CNT_PROV);
+    SIMPLE_PWM_PULSE_FAST(1, LED_BLINK_CNT_PROV);
 }
 
 static void invite_received_cb(void)
 {
-    hal_led_mask_set(LEDS_MASK, false);
-    hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_PROV);
+    //hal_led_mask_set(LEDS_MASK, false);
+    //hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_PROV);
+    SIMPLE_PWM_PULSE_FAST(0, LED_BLINK_CNT_INVITE_RECEIVED);
+    SIMPLE_PWM_PULSE_FAST(1, LED_BLINK_CNT_INVITE_RECEIVED);
 }
 
 static void client_status_cb(const generic_on_off_client_t * p_self, generic_on_off_status_t status, uint16_t src)
@@ -435,6 +443,12 @@ int main(void)
     //                      To verify that the PWM driver works, set one of the LED's to blink or pulse in a loop
     //                      Hint: Look at the comments in simple_pwm.h for examples of how to use the simple_pwm library
     //                      Hint2: The LED's on the board are defined by the BSP_LED_x defines, where x is 0-3
+    uint8_t pwm_pins[] = {BSP_LED_0 | PWM_PIN_INVERTED,
+                          BSP_LED_1 | PWM_PIN_INVERTED,
+                          BSP_LED_2 | PWM_PIN_INVERTED,
+                          BSP_LED_3 | PWM_PIN_INVERTED};
+    pwm_init(pwm_pins, 4);
+    SIMPLE_PWM_PULSE_SLOW(3, SIMPLE_PWM_LOOP_INFINITE);
     
     for (;;)
     {
