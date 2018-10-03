@@ -22,7 +22,7 @@ extern uint16_t                                 fade_in_1000ms[50];
 #define SIMPLE_PWM_FADE_IN_SLOW(ch_index)       pwm_set_loop(ch_index, fade_in_1000ms, 50, 1)
 
 extern uint16_t                                 fade_out_1000ms[50];
-#define SIMPLE_PWM_FADE_OUT_SLOW(ch_index)      pwm_set_loop(ch_index, fade_in_1000ms, 50, 1)
+#define SIMPLE_PWM_FADE_OUT_SLOW(ch_index)      pwm_set_loop(ch_index, fade_out_1000ms, 50, 1)
 
 typedef struct
 {

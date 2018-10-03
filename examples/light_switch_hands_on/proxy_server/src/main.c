@@ -140,7 +140,8 @@ static bool on_off_server_set_cb(const generic_on_off_server_t * p_server, bool 
 static void node_reset(void)
 {
     __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "----- Node reset  -----\n");
-    hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_RESET);
+    //hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_RESET);
+    SIMPLE_PWM_PULSE_FAST(1, 8);
     /* This function may return if there are ongoing flash operations. */
     mesh_stack_device_reset();
 }
@@ -157,19 +158,18 @@ static bool client_publication_configured(void)
 {
     dsm_handle_t pub_addr_handle;
   
-        if (access_model_publish_address_get(m_client.model_handle, &pub_addr_handle) == NRF_SUCCESS)
-        {
-            if (pub_addr_handle == DSM_HANDLE_INVALID)
-            {
-                return false;
-            }
-        }
-        else
+    if (access_model_publish_address_get(m_client.model_handle, &pub_addr_handle) == NRF_SUCCESS)
+    {
+        if (pub_addr_handle == DSM_HANDLE_INVALID)
         {
             return false;
         }
+    }
+    else
+    {
+        return false;
+    }
     
-
     return true;
 }
 
@@ -255,8 +255,9 @@ static void provisioning_complete_cb(void)
     dsm_local_unicast_addresses_get(&node_address);
     __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Node Address: 0x%04x \n", node_address.address_start);
 
-    hal_led_mask_set(LEDS_MASK, false);
-    hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_PROV);
+    //hal_led_mask_set(LEDS_MASK, false);
+    //hal_led_blink_ms(LEDS_MASK, LED_BLINK_INTERVAL_MS, LED_BLINK_CNT_PROV);
+    SIMPLE_PWM_PULSE_FAST(2, 4);
 }
 
 static void client_status_cb(const generic_on_off_client_t * p_self, generic_on_off_status_t status, uint16_t src)
