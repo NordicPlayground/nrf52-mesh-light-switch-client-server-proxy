@@ -43,3 +43,7 @@ the Nordic nRF5 SDK for Mesh:
   - @subpage md_doc_getting_started_mesh_quick_start
   - @subpage md_doc_introduction_basic_concepts
   - @subpage md_doc_introduction_basic_architecture
+  
+## Disclaimer
+- The examples are not extensively tested, are only meant for tutorial purposes & should hopefully facilitate a better understanding of the Nordic Mesh SDK.
+- NO WARRANTY of ANY KIND is provided.
