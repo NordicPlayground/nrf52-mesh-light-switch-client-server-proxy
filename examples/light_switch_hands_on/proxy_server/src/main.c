@@ -94,12 +94,19 @@ static bool                             m_on_off_button_flag = false;
 
 #define MIN_CONN_INTERVAL               MSEC_TO_UNITS(25,  UNIT_1_25_MS)           /**< Minimum acceptable connection interval. was 250 */
 #define MAX_CONN_INTERVAL               MSEC_TO_UNITS(100,  UNIT_1_25_MS)           /**< Maximum acceptable connection interval. was 1000 */
-#define GROUP_MSG_REPEAT_COUNT          (5)
+#define GROUP_MSG_REPEAT_COUNT          (1)
 #define SLAVE_LATENCY                   0                                           /**< Slave latency. */
 #define CONN_SUP_TIMEOUT                MSEC_TO_UNITS(4000, UNIT_10_MS)             /**< Connection supervisory timeout (4 seconds). */
 #define FIRST_CONN_PARAMS_UPDATE_DELAY  APP_TIMER_TICKS(100)                        /**< Time from initiating event (connect or start of notification) to first time sd_ble_gap_conn_param_update is called. */
 #define NEXT_CONN_PARAMS_UPDATE_DELAY   APP_TIMER_TICKS(2000)                       /**< Time between each call to sd_ble_gap_conn_param_update after the first call. */
 #define MAX_CONN_PARAMS_UPDATE_COUNT    3                                           /**< Number of attempts before giving up the connection parameter negotiation. */
+
+APP_TIMER_DEF(timer_test_def);
+#define NUMBER_OF_TOGGLES 2000
+#define TOGGLE_INTERVAL_MS 100
+static int m_transmited_cnt = 0;
+static int m_true_transmited_cnt = 0;
+static int m_true_received_cnt = 0;
 
 static bool m_device_provisioned;
 
@@ -123,7 +130,12 @@ static bool on_off_server_set_cb(const generic_on_off_server_t * p_server, bool 
     // TODO: Hands on 2.3 - After initializing the PWM library in main(), change this function to use the PWM Driver instead of the hal_led_.. functions
     //                      Try to make the LED's fade in and out when the callback occurs, rather than having it set/cleared immediately
     uint32_t err_code;
-    __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Got SET command to %u\n", value);
+	
+	if(value)
+	{
+		__LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Got SET command to %u Counter: %d\n", value, ++m_true_received_cnt);
+	}
+	
     if (value)
     {
         hal_led_pin_set(ONOFF_SERVER_0_LED, true);
@@ -179,7 +191,7 @@ static void button_event_handler(uint32_t button_number)
     __LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Button %u pressed\n", button_number);
         if (client_publication_configured())
     {
-        uint32_t status = NRF_SUCCESS;
+        uint32_t err_code;
         switch (button_number)
         {
             /* Pressing SW1 on the Development Kit will result in LED state to toggle and trigger
@@ -188,10 +200,9 @@ static void button_event_handler(uint32_t button_number)
             case 0:
             case 1:
                 /* send a group message to the ODD group, with flip the current button flag value */
-                m_on_off_button_flag=!m_on_off_button_flag; 
-                status = generic_on_off_client_set_unreliable(&m_client,
-                                                           m_on_off_button_flag,
-                                                          GROUP_MSG_REPEAT_COUNT);
+                err_code = app_timer_start(timer_test_def, APP_TIMER_TICKS(TOGGLE_INTERVAL_MS), NULL);
+                APP_ERROR_CHECK(err_code);
+
                 break;
             
             /* Initiate node reset */
@@ -418,12 +429,44 @@ static void start(void)
     __LOG_XB(LOG_SRC_APP, LOG_LEVEL_INFO, "Device UUID ", p_uuid, NRF_MESH_UUID_SIZE);
 }
 
+static void repeated_timer_handler(void* p_context)
+{
+    uint32_t err_code;
+    m_on_off_button_flag = !m_on_off_button_flag;
+	
+    generic_on_off_client_set_unreliable(&m_client,
+        m_on_off_button_flag,
+        GROUP_MSG_REPEAT_COUNT);
+		
+	if(m_on_off_button_flag)
+	{
+		m_true_transmited_cnt++;
+		__LOG(LOG_SRC_APP, LOG_LEVEL_INFO, "Send SET command to %u Counter: %d\n", m_on_off_button_flag, m_true_transmited_cnt);
+	}
+
+    if (++m_transmited_cnt >= NUMBER_OF_TOGGLES)
+    {
+        m_transmited_cnt = 0;
+        err_code = app_timer_stop(timer_test_def);
+        APP_ERROR_CHECK(err_code);
+    }
+}
 
 int main(void)
 {
     initialize();
     execution_start(start);
-    
+
+    app_timer_init();
+
+    uint32_t err_code;
+
+    // Create timers
+    err_code = app_timer_create(&timer_test_def,
+        APP_TIMER_MODE_REPEATED,
+        repeated_timer_handler);
+    APP_ERROR_CHECK(err_code);
+
     // TODO: Hands on 2.3 - Initialize the simple_pwm library to use the 4 LED's on the devkit
     //                      To verify that the PWM driver works, set one of the LED's to blink or pulse in a loop
     //                      Hint: Look at the comments in simple_pwm.h for examples of how to use the simple_pwm library
